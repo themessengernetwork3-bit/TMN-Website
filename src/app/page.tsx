@@ -10,6 +10,7 @@ import type { ColumnRole } from "@/components/ColumnMapper";
 import { parseUploadedFile } from "@/lib/parseFile";
 import { detectColumns, OPT_OUT_SHEET_NAME_PATTERN } from "@/lib/columnDetect";
 import { buildOptOutSet, scrubCustomerSheet } from "@/lib/scrub";
+import { buildCanonicalOutput, type CanonicalOutput } from "@/lib/canonicalOutput";
 import type {
   CustomerSheetConfig,
   OptOutSheetConfig,
@@ -70,6 +71,7 @@ export default function Home() {
   const [customerError, setCustomerError] = useState<string | null>(null);
 
   const [result, setResult] = useState<ScrubResult | null>(null);
+  const [canonicalOutput, setCanonicalOutput] = useState<CanonicalOutput | null>(null);
 
   async function handleOptOutFiles(files: File[]) {
     setOptOutLoading(true);
@@ -205,6 +207,9 @@ export default function Home() {
     const optOutSet = buildOptOutSet(optOutSources, defaultCountryCode);
     const scrubResult = scrubCustomerSheet(customerSheet, customerConfig, optOutSet, defaultCountryCode);
     setResult(scrubResult);
+    setCanonicalOutput(
+      buildCanonicalOutput(customerSheet, customerConfig, scrubResult.keptRows, defaultCountryCode),
+    );
     setStep(2);
   }
 
@@ -216,6 +221,7 @@ export default function Home() {
     setCustomerSheetName(null);
     setCustomerRoles({});
     setResult(null);
+    setCanonicalOutput(null);
     setStep(0);
   }
 
@@ -287,9 +293,10 @@ export default function Home() {
             />
           )}
 
-          {step === 2 && result && customerFile && customerSheetName && (
+          {step === 2 && result && canonicalOutput && customerFile && customerSheetName && (
             <ResultsStep
               result={result}
+              canonicalOutput={canonicalOutput}
               customerFile={customerFile}
               customerSheetName={customerSheetName}
               onBack={() => setStep(1)}

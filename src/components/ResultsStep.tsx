@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ParsedFile, ScrubResult } from "@/lib/types";
+import type { CanonicalOutput } from "@/lib/canonicalOutput";
 import {
   buildCsvBlob,
   buildRemovedContactsCsvBlob,
@@ -12,6 +13,7 @@ import {
 
 interface ResultsStepProps {
   result: ScrubResult;
+  canonicalOutput: CanonicalOutput;
   customerFile: ParsedFile;
   customerSheetName: string;
   onBack: () => void;
@@ -29,6 +31,7 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
 
 export default function ResultsStep({
   result,
+  canonicalOutput,
   customerFile,
   customerSheetName,
   onBack,
@@ -40,14 +43,18 @@ export default function ResultsStep({
   function downloadCleaned() {
     const name = cleanedFileName(customerFile.fileName);
     if (customerFile.format === "csv") {
-      const blob = buildCsvBlob(result.headers, result.keptRows, customerFile.delimiter || ",");
+      const blob = buildCsvBlob(
+        canonicalOutput.headers,
+        canonicalOutput.rows,
+        customerFile.delimiter || ",",
+      );
       downloadBlob(blob, name);
     } else {
       const blob = buildXlsxBlob(
         customerFile.workbook,
         customerSheetName,
-        result.headers,
-        result.keptRows,
+        canonicalOutput.headers,
+        canonicalOutput.rows,
       );
       downloadBlob(blob, name);
     }
@@ -66,6 +73,19 @@ export default function ResultsStep({
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Assumed default country code <strong>+{summary.defaultCountryCode}</strong> for
           any number with a leading 0.
+        </p>
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          Cleaned file is exported as{" "}
+          <strong>Name, CountryCode, Phone, ContactStatus, AllowCampaign, AllowSMS</strong>.
+          {!canonicalOutput.foundInSource.contactStatus && (
+            <> No ContactStatus column found in the source — defaulted to &ldquo;VALID&rdquo;.</>
+          )}
+          {!canonicalOutput.foundInSource.allowCampaign && (
+            <> No AllowCampaign column found — left blank.</>
+          )}
+          {!canonicalOutput.foundInSource.allowSms && (
+            <> No AllowSMS column found — left blank.</>
+          )}
         </p>
       </div>
 

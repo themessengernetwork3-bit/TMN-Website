@@ -32,7 +32,7 @@ const NAME_TOKENS = [
 export const OPT_OUT_SHEET_NAME_PATTERN =
   /opt.?out|unsub|rsvp|do.?not.?contact|\bdnc\b|blacklist|suppress/i;
 
-function normalizeHeader(header: string): string {
+export function normalizeHeader(header: string): string {
   return header.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
@@ -66,5 +66,30 @@ export function detectColumns(headers: string[]): ColumnDetection {
     phoneCandidates,
     countryCodeCandidate: countryCodeCandidate >= 0 ? countryCodeCandidate : null,
     nameCandidate: nameCandidate >= 0 ? nameCandidate : null,
+  };
+}
+
+export interface PassthroughColumns {
+  contactStatusIndex: number | null;
+  allowCampaignIndex: number | null;
+  allowSmsIndex: number | null;
+}
+
+/**
+ * Finds the source columns that should be carried through verbatim into the
+ * standardized output (ContactStatus / AllowCampaign / AllowSMS). Matched by
+ * exact normalized header name, not fuzzy substring, since these are specific
+ * known field names rather than a family of possible phrasings.
+ */
+export function detectPassthroughColumns(headers: string[]): PassthroughColumns {
+  const normalized = headers.map(normalizeHeader);
+  const find = (name: string) => {
+    const idx = normalized.indexOf(name);
+    return idx >= 0 ? idx : null;
+  };
+  return {
+    contactStatusIndex: find("contactstatus"),
+    allowCampaignIndex: find("allowcampaign"),
+    allowSmsIndex: find("allowsms"),
   };
 }
