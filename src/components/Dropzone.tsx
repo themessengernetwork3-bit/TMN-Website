@@ -29,7 +29,7 @@ export default function Dropzone({
     <div
       className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
         dragging
-          ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30"
+          ? "border-brand-green bg-brand-green/5"
           : "border-zinc-300 dark:border-zinc-700"
       } ${disabled ? "opacity-50 pointer-events-none" : "cursor-pointer"}`}
       onClick={() => inputRef.current?.click()}

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import StepIndicator from "@/components/StepIndicator";
+import Logo from "@/components/Logo";
 import OptOutStep, { sheetKey } from "@/components/OptOutStep";
 import CustomerStep from "@/components/CustomerStep";
 import ResultsStep from "@/components/ResultsStep";
@@ -219,72 +220,100 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-black">
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="flex min-h-screen flex-col bg-zinc-50">
+      <header className="bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400">
-              The Messenger Network
-            </p>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
-              Opt-Out List Scrubber
-            </h1>
-          </div>
+          <Logo />
         </div>
+        <div className="h-1 bg-gradient-to-r from-brand-green via-brand-mint to-brand-orange" />
       </header>
 
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 py-10">
-        <div className="mb-8">
-          <StepIndicator steps={STEPS} currentIndex={step} />
+      <div className="relative overflow-hidden bg-brand-navy pb-24 pt-12">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-brand-green/30 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-16 top-24 h-64 w-64 rounded-full bg-brand-mint/20 blur-3xl"
+        />
+        <div className="relative mx-auto w-full max-w-4xl px-6">
+          <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Opt-out list, <span className="text-brand-mint">scrubbed</span>.
+          </h1>
+          <p className="mt-3 max-w-xl text-brand-mint/80">
+            👉 No manual cross-checking. No guesswork.{" "}
+            <span className="font-semibold text-white">Compliant contact lists that work.</span>
+          </p>
+          <div className="mt-8">
+            <StepIndicator steps={STEPS} currentIndex={step} />
+          </div>
         </div>
+      </div>
 
-        {step === 0 && (
-          <OptOutStep
-            files={optOutFiles}
-            roles={optOutRoles}
-            included={optOutIncluded}
-            defaultCountryCode={defaultCountryCode}
-            onDefaultCountryCodeChange={setDefaultCountryCode}
-            onFiles={handleOptOutFiles}
-            onRoleChange={handleOptOutRoleChange}
-            onIncludedChange={handleOptOutIncludedChange}
-            onRemoveFile={handleRemoveOptOutFile}
-            onContinue={() => setStep(1)}
-            canContinue={canContinueFromOptOut}
-            loading={optOutLoading}
-            error={optOutError}
-          />
-        )}
+      <main className="relative z-10 mx-auto -mt-14 w-full max-w-4xl flex-1 px-6 pb-16">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl shadow-black/5 sm:p-8">
+          {step === 0 && (
+            <OptOutStep
+              files={optOutFiles}
+              roles={optOutRoles}
+              included={optOutIncluded}
+              defaultCountryCode={defaultCountryCode}
+              onDefaultCountryCodeChange={setDefaultCountryCode}
+              onFiles={handleOptOutFiles}
+              onRoleChange={handleOptOutRoleChange}
+              onIncludedChange={handleOptOutIncludedChange}
+              onRemoveFile={handleRemoveOptOutFile}
+              onContinue={() => setStep(1)}
+              canContinue={canContinueFromOptOut}
+              loading={optOutLoading}
+              error={optOutError}
+            />
+          )}
 
-        {step === 1 && (
-          <CustomerStep
-            file={customerFile}
-            selectedSheetName={customerSheetName}
-            roles={customerRoles}
-            onFile={handleCustomerFile}
-            onSheetChange={handleCustomerSheetChange}
-            onRoleChange={handleCustomerRoleChange}
-            onBack={() => setStep(0)}
-            onRun={runScrub}
-            canRun={canRun}
-            loading={customerLoading}
-            error={customerError}
-          />
-        )}
+          {step === 1 && (
+            <CustomerStep
+              file={customerFile}
+              selectedSheetName={customerSheetName}
+              roles={customerRoles}
+              onFile={handleCustomerFile}
+              onSheetChange={handleCustomerSheetChange}
+              onRoleChange={handleCustomerRoleChange}
+              onBack={() => setStep(0)}
+              onRun={runScrub}
+              canRun={canRun}
+              loading={customerLoading}
+              error={customerError}
+            />
+          )}
 
-        {step === 2 && result && customerFile && customerSheetName && (
-          <ResultsStep
-            result={result}
-            customerFile={customerFile}
-            customerSheetName={customerSheetName}
-            onBack={() => setStep(1)}
-            onRestart={restart}
-          />
-        )}
+          {step === 2 && result && customerFile && customerSheetName && (
+            <ResultsStep
+              result={result}
+              customerFile={customerFile}
+              customerSheetName={customerSheetName}
+              onBack={() => setStep(1)}
+              onRestart={restart}
+            />
+          )}
+        </div>
+        <p className="mt-6 text-center text-xs text-zinc-400">
+          Files are processed entirely in your browser — nothing is uploaded to a server.
+        </p>
       </main>
 
-      <footer className="border-t border-zinc-200 bg-white py-6 text-center text-xs text-zinc-400 dark:border-zinc-800 dark:bg-zinc-950">
-        Files are processed entirely in your browser — nothing is uploaded to a server.
+      <footer className="bg-brand-navy py-12">
+        <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-6 text-center">
+          <Logo variant="light" />
+          <div className="mt-2 space-y-1 text-sm text-zinc-300">
+            <p>
+              📍 Block E, 2nd Floor Clearwater Corporate Office Park, North Cnr Atlas Rd,
+              Merlin Dr, Parkhaven, Boksburg, 1459
+            </p>
+            <p>📞 +27 10 446 5788</p>
+            <p>✉️ info@themessengernetwork.co.za</p>
+          </div>
+        </div>
       </footer>
     </div>
   );

@@ -5,6 +5,7 @@ interface StepIndicatorProps {
   currentIndex: number;
 }
 
+/** Rendered on the brand-navy hero band — colors are tuned for that dark background. */
 export default function StepIndicator({ steps, currentIndex }: StepIndicatorProps) {
   return (
     <ol className="flex flex-wrap items-center gap-x-2 gap-y-3 text-sm">
@@ -15,25 +16,19 @@ export default function StepIndicator({ steps, currentIndex }: StepIndicatorProp
             <span
               className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
                 state === "done"
-                  ? "bg-teal-600 text-white"
+                  ? "bg-brand-green text-white"
                   : state === "active"
-                    ? "bg-teal-100 text-teal-800 ring-2 ring-teal-600 dark:bg-teal-900 dark:text-teal-100"
-                    : "bg-zinc-100 text-zinc-400 dark:bg-zinc-800"
+                    ? "bg-white/10 text-brand-mint ring-2 ring-brand-green"
+                    : "bg-white/5 text-white/40"
               }`}
             >
               {i + 1}
             </span>
-            <span
-              className={
-                state === "todo"
-                  ? "text-zinc-400"
-                  : "font-medium text-zinc-800 dark:text-zinc-100"
-              }
-            >
+            <span className={state === "todo" ? "text-white/40" : "font-medium text-white"}>
               {step}
             </span>
             {i < steps.length - 1 && (
-              <span className="mx-1 hidden h-px w-6 bg-zinc-300 dark:bg-zinc-700 sm:block" />
+              <span className="mx-1 hidden h-px w-6 bg-white/15 sm:block" />
             )}
           </li>
         );

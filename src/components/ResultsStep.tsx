@@ -98,7 +98,7 @@ export default function ResultsStep({
           type="button"
           onClick={downloadCleaned}
           disabled={!summary.consistent}
-          className="rounded-full bg-teal-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-full bg-brand-green px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-green-light disabled:cursor-not-allowed disabled:opacity-40"
         >
           Download cleaned file
         </button>
@@ -113,7 +113,7 @@ export default function ResultsStep({
         <button
           type="button"
           onClick={() => setShowRemoved((v) => !v)}
-          className="rounded-full border border-transparent px-6 py-2 text-sm font-medium text-teal-700 hover:underline dark:text-teal-400"
+          className="rounded-full border border-transparent px-6 py-2 text-sm font-medium text-brand-green hover:underline"
         >
           {showRemoved ? "Hide" : "Preview"} removed contacts ({result.removedContacts.length})
         </button>

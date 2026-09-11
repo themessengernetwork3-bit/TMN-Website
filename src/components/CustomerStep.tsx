@@ -111,7 +111,7 @@ export default function CustomerStep({
           type="button"
           disabled={!canRun || loading}
           onClick={onRun}
-          className="rounded-full bg-teal-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-full bg-brand-green px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-green-light disabled:cursor-not-allowed disabled:opacity-40"
         >
           Run scrub →
         </button>

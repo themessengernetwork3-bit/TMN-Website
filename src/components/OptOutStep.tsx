@@ -118,7 +118,7 @@ export default function OptOutStep({
                     />
                     Sheet: {sheet.name}
                     {looksLikeOptOut && (
-                      <span className="rounded-full bg-teal-100 px-2 py-0.5 text-xs font-normal text-teal-800 dark:bg-teal-900 dark:text-teal-200">
+                      <span className="rounded-full bg-brand-green/10 px-2 py-0.5 text-xs font-normal text-brand-green dark:bg-brand-green/20">
                         looks like an opt-out sheet
                       </span>
                     )}
@@ -153,7 +153,7 @@ export default function OptOutStep({
           type="button"
           disabled={!canContinue || loading}
           onClick={onContinue}
-          className="rounded-full bg-teal-600 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-full bg-brand-green px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-green-light disabled:cursor-not-allowed disabled:opacity-40"
         >
           Continue to customer database →
         </button>
