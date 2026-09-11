@@ -14,6 +14,18 @@ function isBlankRow(row: string[]): boolean {
   return row.every((cell) => cell === undefined || cell === null || cell === "");
 }
 
+/**
+ * Pads/trims a row to match the header count. Rows already the right length
+ * (the common case for well-formed files) are returned as-is instead of being
+ * copied cell-by-cell — meaningfully cheaper on wide files (hundreds of columns).
+ */
+function alignRowToHeaders(row: string[], headerCount: number): string[] {
+  if (row.length === headerCount) return row;
+  const aligned = row.slice(0, headerCount);
+  while (aligned.length < headerCount) aligned.push("");
+  return aligned;
+}
+
 async function parseCsvFile(file: File): Promise<ParsedFile> {
   const text = await file.text();
   const result = Papa.parse<string[]>(text, {
@@ -22,9 +34,7 @@ async function parseCsvFile(file: File): Promise<ParsedFile> {
 
   const rawRows = result.data.filter((row) => !isBlankRow(row));
   const headers = (rawRows[0] ?? []).map((h) => String(h ?? "").trim());
-  const rows = rawRows.slice(1).map((row) =>
-    headers.map((_, i) => String(row[i] ?? "")),
-  );
+  const rows = rawRows.slice(1).map((row) => alignRowToHeaders(row, headers.length));
 
   const sheet: ParsedSheet = { name: "Sheet1", headers, rows };
 
@@ -51,9 +61,7 @@ async function parseExcelFile(file: File, format: FileFormat): Promise<ParsedFil
     });
     const rawRows = aoa.filter((row) => !isBlankRow(row));
     const headers = (rawRows[0] ?? []).map((h) => String(h ?? "").trim());
-    const rows = rawRows
-      .slice(1)
-      .map((row) => headers.map((_, i) => String(row[i] ?? "")));
+    const rows = rawRows.slice(1).map((row) => alignRowToHeaders(row, headers.length));
     return { name, headers, rows };
   });
 

@@ -38,32 +38,47 @@ export default function ResultsStep({
   onRestart,
 }: ResultsStepProps) {
   const [showRemoved, setShowRemoved] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const { summary } = result;
 
   function downloadCleaned() {
-    const name = cleanedFileName(customerFile.fileName);
-    if (customerFile.format === "csv") {
-      const blob = buildCsvBlob(
-        canonicalOutput.headers,
-        canonicalOutput.rows,
-        customerFile.delimiter || ",",
+    setDownloadError(null);
+    try {
+      const name = cleanedFileName(customerFile.fileName);
+      if (customerFile.format === "csv") {
+        const blob = buildCsvBlob(
+          canonicalOutput.headers,
+          canonicalOutput.rows,
+          customerFile.delimiter || ",",
+        );
+        downloadBlob(blob, name);
+      } else {
+        const blob = buildXlsxBlob(
+          customerFile.workbook,
+          customerSheetName,
+          canonicalOutput.headers,
+          canonicalOutput.rows,
+        );
+        downloadBlob(blob, name);
+      }
+    } catch (e) {
+      setDownloadError(
+        `Could not build the cleaned file: ${e instanceof Error ? e.message : String(e)}`,
       );
-      downloadBlob(blob, name);
-    } else {
-      const blob = buildXlsxBlob(
-        customerFile.workbook,
-        customerSheetName,
-        canonicalOutput.headers,
-        canonicalOutput.rows,
-      );
-      downloadBlob(blob, name);
     }
   }
 
   function downloadRemovedContacts() {
-    const base = customerFile.fileName.replace(/\.[^.]+$/, "");
-    const blob = buildRemovedContactsCsvBlob(result.removedContacts);
-    downloadBlob(blob, `${base}_removed_contacts.csv`);
+    setDownloadError(null);
+    try {
+      const base = customerFile.fileName.replace(/\.[^.]+$/, "");
+      const blob = buildRemovedContactsCsvBlob(result.removedContacts);
+      downloadBlob(blob, `${base}_removed_contacts.csv`);
+    } catch (e) {
+      setDownloadError(
+        `Could not build the removed-contacts file: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
   }
 
   return (
@@ -88,6 +103,14 @@ export default function ResultsStep({
           )}
         </p>
       </div>
+
+      {downloadError && (
+        <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+          <strong>Download failed:</strong> {downloadError} If this keeps happening, check
+          whether your browser or an extension (ad blocker / download manager) is blocking
+          automatic downloads for this site, then try again.
+        </div>
+      )}
 
       {!summary.consistent && (
         <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">

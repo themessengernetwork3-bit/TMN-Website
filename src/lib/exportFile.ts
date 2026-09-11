@@ -40,6 +40,13 @@ export function buildRemovedContactsCsvBlob(contacts: RemovedContact[]): Blob {
 }
 
 export function downloadBlob(blob: Blob, filename: string) {
+  if (typeof URL === "undefined" || typeof URL.createObjectURL !== "function") {
+    throw new Error("This browser does not support in-page file downloads.");
+  }
+  if (blob.size === 0) {
+    throw new Error("Generated file is empty.");
+  }
+
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -47,7 +54,9 @@ export function downloadBlob(blob: Blob, filename: string) {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  // Revoke on a delay rather than immediately: revoking right after click() can race
+  // the browser's own read of the blob on larger files, silently breaking the download.
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
 export function cleanedFileName(originalName: string): string {
