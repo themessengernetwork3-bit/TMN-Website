@@ -11,6 +11,7 @@ export function sheetKey(fileId: string, sheetName: string) {
 }
 
 interface OptOutStepProps {
+  stepNumber: number;
   files: ParsedFile[];
   roles: Record<string, Record<number, ColumnRole>>;
   included: Record<string, boolean>;
@@ -20,6 +21,7 @@ interface OptOutStepProps {
   onRoleChange: (key: string, colIndex: number, role: ColumnRole) => void;
   onIncludedChange: (key: string, included: boolean) => void;
   onRemoveFile: (fileId: string) => void;
+  onBack: () => void;
   onContinue: () => void;
   canContinue: boolean;
   loading: boolean;
@@ -27,6 +29,7 @@ interface OptOutStepProps {
 }
 
 export default function OptOutStep({
+  stepNumber,
   files,
   roles,
   included,
@@ -36,6 +39,7 @@ export default function OptOutStep({
   onRoleChange,
   onIncludedChange,
   onRemoveFile,
+  onBack,
   onContinue,
   canContinue,
   loading,
@@ -45,7 +49,7 @@ export default function OptOutStep({
     <div className="flex flex-col gap-6">
       <div>
         <h2 className="text-xl font-bold tracking-tight text-zinc-900">
-          1. Upload your opt-out / do-not-contact list
+          {stepNumber}. Upload your opt-out / do-not-contact list
         </h2>
         <p className="mt-1.5 text-sm text-zinc-500">
           One or more spreadsheets or CSVs of people who must not be contacted.
@@ -159,7 +163,10 @@ export default function OptOutStep({
         </div>
       ))}
 
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <Button variant="secondary" onClick={onBack}>
+          ← Back
+        </Button>
         <Button disabled={!canContinue || loading} onClick={onContinue}>
           Continue to customer database →
         </Button>

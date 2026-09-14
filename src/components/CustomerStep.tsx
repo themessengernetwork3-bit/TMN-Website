@@ -6,6 +6,8 @@ import Button from "./Button";
 import type { ParsedFile } from "@/lib/types";
 
 interface CustomerStepProps {
+  stepNumber: number;
+  showOptOutCopy: boolean;
   file: ParsedFile | null;
   selectedSheetName: string | null;
   roles: Record<number, ColumnRole>;
@@ -20,6 +22,8 @@ interface CustomerStepProps {
 }
 
 export default function CustomerStep({
+  stepNumber,
+  showOptOutCopy,
   file,
   selectedSheetName,
   roles,
@@ -38,12 +42,12 @@ export default function CustomerStep({
     <div className="flex flex-col gap-6">
       <div>
         <h2 className="text-xl font-bold tracking-tight text-zinc-900">
-          2. Upload the customer database to clean
+          {stepNumber}. Upload the customer database to clean
         </h2>
         <p className="mt-1.5 text-sm text-zinc-500">
-          This is the contact list that needs opt-outs removed before use.
-          Nothing here is modified in your opt-out file — it&rsquo;s read-only
-          reference data.
+          {showOptOutCopy
+            ? "This is the contact list that needs opt-outs removed before use. Nothing here is modified in your opt-out file — it’s read-only reference data."
+            : "This is the contact list to format and dedupe for your broadcast."}
         </p>
       </div>
 

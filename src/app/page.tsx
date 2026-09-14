@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import StepIndicator from "@/components/StepIndicator";
 import Logo from "@/components/Logo";
+import CleaningTypeStep from "@/components/CleaningTypeStep";
 import OptOutStep, { sheetKey } from "@/components/OptOutStep";
 import CustomerStep from "@/components/CustomerStep";
 import ResultsStep from "@/components/ResultsStep";
@@ -12,6 +13,7 @@ import { detectColumns, OPT_OUT_SHEET_NAME_PATTERN } from "@/lib/columnDetect";
 import { buildOptOutSet, scrubCustomerSheet } from "@/lib/scrub";
 import { buildCanonicalOutput, type CanonicalOutput } from "@/lib/canonicalOutput";
 import type {
+  CleaningType,
   CustomerSheetConfig,
   OptOutSheetConfig,
   ParsedFile,
@@ -50,10 +52,12 @@ function rolesToConfig(roles: RolesMap): {
   return { phoneColIndexes, countryCodeColIndex, nameColIndex };
 }
 
-const STEPS = ["Opt-out list", "Customer database", "Summary"];
+const STEPS_BASIC = ["Cleaning type", "Customer database", "Summary"];
+const STEPS_OPTOUT = ["Cleaning type", "Opt-out list", "Customer database", "Summary"];
 
 export default function Home() {
   const [step, setStep] = useState(0);
+  const [cleaningType, setCleaningType] = useState<CleaningType | null>(null);
   const [defaultCountryCode, setDefaultCountryCode] = useState("27");
 
   // --- Opt-out state ---
@@ -202,18 +206,25 @@ export default function Home() {
 
   const canRun = !!customerSheet && customerConfig.phoneColIndexes.length > 0;
 
+  const STEPS = cleaningType === "optout" ? STEPS_OPTOUT : STEPS_BASIC;
+  const optOutStepIndex = 1;
+  const customerStepIndex = cleaningType === "optout" ? 2 : 1;
+  const summaryStepIndex = cleaningType === "optout" ? 3 : 2;
+
   function runScrub() {
     if (!customerSheet) return;
-    const optOutSet = buildOptOutSet(optOutSources, defaultCountryCode);
+    const optOutSet =
+      cleaningType === "optout" ? buildOptOutSet(optOutSources, defaultCountryCode) : new Set<string>();
     const scrubResult = scrubCustomerSheet(customerSheet, customerConfig, optOutSet, defaultCountryCode);
     setResult(scrubResult);
     setCanonicalOutput(
       buildCanonicalOutput(customerSheet, customerConfig, scrubResult.keptRows, defaultCountryCode),
     );
-    setStep(2);
+    setStep(summaryStepIndex);
   }
 
   function restart() {
+    setCleaningType(null);
     setOptOutFiles([]);
     setOptOutRoles({});
     setOptOutIncluded({});
@@ -249,7 +260,15 @@ export default function Home() {
         />
         <div className="relative mx-auto w-full max-w-4xl px-6">
           <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Opt-out list, <span className="text-brand-mint">scrubbed</span>.
+            {cleaningType === "optout" ? (
+              <>
+                Opt-out list, <span className="text-brand-mint">scrubbed</span>.
+              </>
+            ) : (
+              <>
+                Broadcast-ready contacts, <span className="text-brand-mint">fast</span>.
+              </>
+            )}
           </h1>
           <p className="mt-4 max-w-xl text-base text-brand-mint/80 sm:text-lg">
             👉 No manual cross-checking. No guesswork.{" "}
@@ -264,7 +283,18 @@ export default function Home() {
       <main className="relative z-10 mx-auto -mt-16 w-full max-w-4xl flex-1 px-6 pb-16">
         <div className="animate-fade-up rounded-3xl border border-zinc-100 bg-white p-6 shadow-2xl shadow-zinc-900/10 sm:p-8">
           {step === 0 && (
+            <CleaningTypeStep
+              stepNumber={1}
+              onSelect={(type) => {
+                setCleaningType(type);
+                setStep(type === "optout" ? optOutStepIndex : customerStepIndex);
+              }}
+            />
+          )}
+
+          {cleaningType === "optout" && step === optOutStepIndex && (
             <OptOutStep
+              stepNumber={2}
               files={optOutFiles}
               roles={optOutRoles}
               included={optOutIncluded}
@@ -274,22 +304,25 @@ export default function Home() {
               onRoleChange={handleOptOutRoleChange}
               onIncludedChange={handleOptOutIncludedChange}
               onRemoveFile={handleRemoveOptOutFile}
-              onContinue={() => setStep(1)}
+              onBack={() => setStep(0)}
+              onContinue={() => setStep(customerStepIndex)}
               canContinue={canContinueFromOptOut}
               loading={optOutLoading}
               error={optOutError}
             />
           )}
 
-          {step === 1 && (
+          {cleaningType && step === customerStepIndex && (
             <CustomerStep
+              stepNumber={cleaningType === "optout" ? 3 : 2}
+              showOptOutCopy={cleaningType === "optout"}
               file={customerFile}
               selectedSheetName={customerSheetName}
               roles={customerRoles}
               onFile={handleCustomerFile}
               onSheetChange={handleCustomerSheetChange}
               onRoleChange={handleCustomerRoleChange}
-              onBack={() => setStep(0)}
+              onBack={() => setStep(cleaningType === "optout" ? optOutStepIndex : 0)}
               onRun={runScrub}
               canRun={canRun}
               loading={customerLoading}
@@ -297,16 +330,23 @@ export default function Home() {
             />
           )}
 
-          {step === 2 && result && canonicalOutput && customerFile && customerSheetName && (
-            <ResultsStep
-              result={result}
-              canonicalOutput={canonicalOutput}
-              customerFile={customerFile}
-              customerSheetName={customerSheetName}
-              onBack={() => setStep(1)}
-              onRestart={restart}
-            />
-          )}
+          {cleaningType &&
+            step === summaryStepIndex &&
+            result &&
+            canonicalOutput &&
+            customerFile &&
+            customerSheetName && (
+              <ResultsStep
+                stepNumber={cleaningType === "optout" ? 4 : 3}
+                cleaningType={cleaningType}
+                result={result}
+                canonicalOutput={canonicalOutput}
+                customerFile={customerFile}
+                customerSheetName={customerSheetName}
+                onBack={() => setStep(customerStepIndex)}
+                onRestart={restart}
+              />
+            )}
         </div>
         <p className="mt-6 text-center text-xs text-zinc-400">
           Files are processed entirely in your browser — nothing is uploaded to a server.

@@ -33,7 +33,10 @@ export function buildXlsxBlob(
 
 export function buildRemovedContactsCsvBlob(contacts: RemovedContact[]): Blob {
   const content = Papa.unparse(
-    [["Name", "Phone"], ...contacts.map((c) => [c.name, c.phone])],
+    [
+      ["Name", "Phone", "Reason"],
+      ...contacts.map((c) => [c.name, c.phone, c.reason === "opt-out" ? "Opt-out" : "Duplicate"]),
+    ],
     { delimiter: "," },
   );
   return new Blob([content], { type: "text/csv;charset=utf-8;" });

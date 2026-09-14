@@ -1,5 +1,13 @@
 export type FileFormat = "csv" | "xlsx" | "xls";
 
+/**
+ * "basic" = format + dedupe only, no opt-out list involved.
+ * "optout" = dedupe + remove opt-out matches, then format.
+ */
+export type CleaningType = "basic" | "optout";
+
+export type RemovalReason = "duplicate" | "opt-out";
+
 export interface ParsedSheet {
   /** Sheet/tab name. CSV files get a single synthetic sheet named "Sheet1". */
   name: string;
@@ -51,6 +59,10 @@ export interface ScrubSummary {
   totalOriginalRows: number;
   totalUniqueOptOutNumbers: number;
   uniqueMatchedContactsRemoved: number;
+  /** Rows removed because their phone number had already appeared earlier in the file. */
+  duplicateRowsRemoved: number;
+  /** Rows removed because they matched the opt-out set (0 for basic cleaning). */
+  optOutRowsRemoved: number;
   rowsRemoved: number;
   rowsRemaining: number;
   consistent: boolean;
@@ -60,6 +72,7 @@ export interface ScrubSummary {
 export interface RemovedContact {
   name: string;
   phone: string;
+  reason: RemovalReason;
 }
 
 export interface ScrubResult {

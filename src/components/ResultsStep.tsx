@@ -13,6 +13,8 @@ import {
 } from "@/lib/exportFile";
 
 interface ResultsStepProps {
+  stepNumber: number;
+  cleaningType: "basic" | "optout";
   result: ScrubResult;
   canonicalOutput: CanonicalOutput;
   customerFile: ParsedFile;
@@ -51,6 +53,8 @@ function StatCard({
 }
 
 export default function ResultsStep({
+  stepNumber,
+  cleaningType,
   result,
   canonicalOutput,
   customerFile,
@@ -106,7 +110,7 @@ export default function ResultsStep({
     <div className="flex flex-col gap-6">
       <div>
         <h2 className="text-xl font-bold tracking-tight text-zinc-900">
-          3. Summary
+          {stepNumber}. Summary
         </h2>
         <p className="mt-1.5 text-sm text-zinc-500">
           Assumed default country code{" "}
@@ -161,17 +165,26 @@ export default function ResultsStep({
           value={summary.totalOriginalRows}
         />
         <StatCard
-          label="Unique opt-out numbers"
-          value={summary.totalUniqueOptOutNumbers}
+          label="Duplicates removed"
+          value={summary.duplicateRowsRemoved}
           accent="orange"
         />
+        {cleaningType === "optout" && (
+          <>
+            <StatCard
+              label="Unique opt-out numbers"
+              value={summary.totalUniqueOptOutNumbers}
+              accent="orange"
+            />
+            <StatCard
+              label="Opted-out contacts removed"
+              value={summary.optOutRowsRemoved}
+              accent="orange"
+            />
+          </>
+        )}
         <StatCard
-          label="Unique contacts removed"
-          value={summary.uniqueMatchedContactsRemoved}
-          accent="orange"
-        />
-        <StatCard
-          label="Rows removed"
+          label="Rows removed (total)"
           value={summary.rowsRemoved}
           accent="orange"
         />
@@ -181,15 +194,6 @@ export default function ResultsStep({
           accent="green"
         />
       </div>
-
-      {summary.rowsRemoved !== summary.uniqueMatchedContactsRemoved && (
-        <p className="text-sm text-zinc-500">
-          Rows removed ({summary.rowsRemoved}) differ from unique contacts
-          removed ({summary.uniqueMatchedContactsRemoved}) — the customer file
-          had duplicate rows sharing the same phone number, and every duplicate
-          was removed.
-        </p>
-      )}
 
       <div className="flex flex-wrap items-center gap-3">
         <Button onClick={downloadCleaned} disabled={!summary.consistent}>
@@ -219,6 +223,9 @@ export default function ResultsStep({
                 <th className="px-4 py-2.5 text-left text-xs font-semibold tracking-wide text-zinc-400 uppercase">
                   Matched phone
                 </th>
+                <th className="px-4 py-2.5 text-left text-xs font-semibold tracking-wide text-zinc-400 uppercase">
+                  Reason
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
@@ -229,6 +236,17 @@ export default function ResultsStep({
                   </td>
                   <td className="px-4 py-2.5 font-mono text-zinc-600">
                     {c.phone}
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        c.reason === "opt-out"
+                          ? "bg-brand-orange/10 text-brand-orange"
+                          : "bg-zinc-100 text-zinc-500"
+                      }`}
+                    >
+                      {c.reason === "opt-out" ? "Opt-out" : "Duplicate"}
+                    </span>
                   </td>
                 </tr>
               ))}
