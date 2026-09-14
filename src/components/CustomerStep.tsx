@@ -2,6 +2,7 @@
 
 import Dropzone from "./Dropzone";
 import ColumnMapper, { ColumnRole } from "./ColumnMapper";
+import Button from "./Button";
 import type { ParsedFile } from "@/lib/types";
 
 interface CustomerStepProps {
@@ -36,10 +37,10 @@ export default function CustomerStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           2. Upload the customer database to clean
         </h2>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
           This is the contact list that needs opt-outs removed before use. Nothing here
           is modified in your opt-out file — it&rsquo;s read-only reference data.
         </p>
@@ -53,20 +54,20 @@ export default function CustomerStep({
       />
 
       {error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </p>
       )}
 
       {file && (
-        <div className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+        <div className="animate-fade-up rounded-2xl border border-zinc-100 p-4 shadow-sm dark:border-zinc-800">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-medium text-zinc-800 dark:text-zinc-100">{file.fileName}</h3>
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">{file.fileName}</h3>
             {file.sheets.length > 1 && (
               <label className="flex items-center gap-2 text-sm">
                 Sheet:
                 <select
-                  className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+                  className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-brand-green/50 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
                   value={selectedSheetName ?? ""}
                   onChange={(e) => onSheetChange(e.target.value)}
                 >
@@ -100,21 +101,12 @@ export default function CustomerStep({
       )}
 
       <div className="flex justify-between">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-full border border-zinc-300 px-6 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900"
-        >
+        <Button variant="secondary" onClick={onBack}>
           ← Back
-        </button>
-        <button
-          type="button"
-          disabled={!canRun || loading}
-          onClick={onRun}
-          className="rounded-full bg-brand-green px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-green-light disabled:cursor-not-allowed disabled:opacity-40"
-        >
+        </Button>
+        <Button disabled={!canRun || loading} onClick={onRun}>
           Run scrub →
-        </button>
+        </Button>
       </div>
     </div>
   );

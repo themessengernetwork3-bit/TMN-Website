@@ -227,38 +227,42 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50">
-      <header className="bg-white">
+      <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <Logo />
         </div>
-        <div className="h-1 bg-gradient-to-r from-brand-green via-brand-mint to-brand-orange" />
+        <div className="h-[3px] bg-gradient-to-r from-brand-green via-brand-mint to-brand-orange" />
       </header>
 
-      <div className="relative overflow-hidden bg-brand-navy pb-24 pt-12">
+      <div className="dot-grid relative overflow-hidden bg-brand-navy pt-14 pb-28">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-brand-green/30 blur-3xl"
+          className="pointer-events-none absolute -top-10 -left-24 h-80 w-80 rounded-full bg-brand-green/30 blur-3xl"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-16 top-24 h-64 w-64 rounded-full bg-brand-mint/20 blur-3xl"
+          className="pointer-events-none absolute top-16 -right-20 h-72 w-72 rounded-full bg-brand-mint/20 blur-3xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-brand-navy to-transparent"
         />
         <div className="relative mx-auto w-full max-w-4xl px-6">
-          <h1 className="max-w-2xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Opt-out list, <span className="text-brand-mint">scrubbed</span>.
           </h1>
-          <p className="mt-3 max-w-xl text-brand-mint/80">
+          <p className="mt-4 max-w-xl text-base text-brand-mint/80 sm:text-lg">
             👉 No manual cross-checking. No guesswork.{" "}
             <span className="font-semibold text-white">Compliant contact lists that work.</span>
           </p>
-          <div className="mt-8">
+          <div className="mt-10">
             <StepIndicator steps={STEPS} currentIndex={step} />
           </div>
         </div>
       </div>
 
-      <main className="relative z-10 mx-auto -mt-14 w-full max-w-4xl flex-1 px-6 pb-16">
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl shadow-black/5 sm:p-8">
+      <main className="relative z-10 mx-auto -mt-16 w-full max-w-4xl flex-1 px-6 pb-16">
+        <div className="animate-fade-up rounded-3xl border border-zinc-100 bg-white p-6 shadow-2xl shadow-zinc-900/10 sm:p-8">
           {step === 0 && (
             <OptOutStep
               files={optOutFiles}
@@ -309,10 +313,10 @@ export default function Home() {
         </p>
       </main>
 
-      <footer className="bg-brand-navy py-12">
+      <footer className="border-t border-white/5 bg-brand-navy py-14">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-6 text-center">
           <Logo variant="light" />
-          <div className="mt-2 space-y-1 text-sm text-zinc-300">
+          <div className="mt-2 space-y-1.5 text-sm text-zinc-300">
             <p>
               📍 Block E, 2nd Floor Clearwater Corporate Office Park, North Cnr Atlas Rd,
               Merlin Dr, Parkhaven, Boksburg, 1459

@@ -2,6 +2,7 @@
 
 import Dropzone from "./Dropzone";
 import ColumnMapper, { ColumnRole } from "./ColumnMapper";
+import Button from "./Button";
 import type { ParsedFile } from "@/lib/types";
 import { OPT_OUT_SHEET_NAME_PATTERN } from "@/lib/columnDetect";
 
@@ -43,17 +44,17 @@ export default function OptOutStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
           1. Upload your opt-out / do-not-contact list
         </h2>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
           One or more spreadsheets or CSVs of people who must not be contacted. A single
           file can have multiple sheets (e.g. &ldquo;Opt Out&rdquo;, &ldquo;RSVP&rdquo;,
           &ldquo;Unsubscribed&rdquo;) — pick which ones count below.
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-zinc-50 px-4 py-3 dark:bg-zinc-900/60">
         <label htmlFor="cc" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Default country dial code
         </label>
@@ -61,7 +62,7 @@ export default function OptOutStep({
           id="cc"
           type="text"
           inputMode="numeric"
-          className="w-20 rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-950"
+          className="w-20 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-center text-sm font-semibold focus:ring-2 focus:ring-brand-green/50 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
           value={defaultCountryCode}
           onChange={(e) => onDefaultCountryCodeChange(e.target.value.replace(/\D/g, ""))}
         />
@@ -79,7 +80,7 @@ export default function OptOutStep({
       />
 
       {error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </p>
       )}
@@ -87,17 +88,13 @@ export default function OptOutStep({
       {files.map((file) => (
         <div
           key={file.id}
-          className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800"
+          className="animate-fade-up rounded-2xl border border-zinc-100 p-4 shadow-sm dark:border-zinc-800"
         >
           <div className="flex items-center justify-between">
-            <h3 className="font-medium text-zinc-800 dark:text-zinc-100">{file.fileName}</h3>
-            <button
-              type="button"
-              onClick={() => onRemoveFile(file.id)}
-              className="text-xs text-red-600 hover:underline dark:text-red-400"
-            >
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">{file.fileName}</h3>
+            <Button variant="danger" className="px-3 py-1 text-xs" onClick={() => onRemoveFile(file.id)}>
               Remove file
-            </button>
+            </Button>
           </div>
 
           <div className="mt-3 flex flex-col gap-4">
@@ -108,17 +105,18 @@ export default function OptOutStep({
               return (
                 <div
                   key={key}
-                  className="rounded-lg border border-zinc-100 bg-zinc-50/50 p-3 dark:border-zinc-800 dark:bg-zinc-900/40"
+                  className="rounded-xl border border-zinc-100 bg-zinc-50/60 p-3.5 dark:border-zinc-800 dark:bg-zinc-900/40"
                 >
-                  <label className="flex items-center gap-2 text-sm font-medium text-zinc-800 dark:text-zinc-100">
+                  <label className="flex flex-wrap items-center gap-2 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
                     <input
                       type="checkbox"
+                      className="h-4 w-4 accent-brand-green"
                       checked={isIncluded}
                       onChange={(e) => onIncludedChange(key, e.target.checked)}
                     />
                     Sheet: {sheet.name}
                     {looksLikeOptOut && (
-                      <span className="rounded-full bg-brand-green/10 px-2 py-0.5 text-xs font-normal text-brand-green dark:bg-brand-green/20">
+                      <span className="rounded-full bg-brand-green/10 px-2.5 py-0.5 text-xs font-medium text-brand-green">
                         looks like an opt-out sheet
                       </span>
                     )}
@@ -149,14 +147,9 @@ export default function OptOutStep({
       ))}
 
       <div className="flex justify-end">
-        <button
-          type="button"
-          disabled={!canContinue || loading}
-          onClick={onContinue}
-          className="rounded-full bg-brand-green px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-green-light disabled:cursor-not-allowed disabled:opacity-40"
-        >
+        <Button disabled={!canContinue || loading} onClick={onContinue}>
           Continue to customer database →
-        </button>
+        </Button>
       </div>
     </div>
   );

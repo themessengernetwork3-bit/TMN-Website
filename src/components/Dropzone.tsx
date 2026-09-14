@@ -27,11 +27,11 @@ export default function Dropzone({
 
   return (
     <div
-      className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
+      className={`group relative overflow-hidden rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200 ${
         dragging
-          ? "border-brand-green bg-brand-green/5"
-          : "border-zinc-300 dark:border-zinc-700"
-      } ${disabled ? "opacity-50 pointer-events-none" : "cursor-pointer"}`}
+          ? "scale-[1.01] border-brand-green bg-brand-green/5"
+          : "border-zinc-200 hover:border-brand-green/50 hover:bg-zinc-50/60 dark:border-zinc-700"
+      } ${disabled ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
       onClick={() => inputRef.current?.click()}
       onDragOver={(e) => {
         e.preventDefault();
@@ -44,6 +44,23 @@ export default function Dropzone({
         handleFiles(e.dataTransfer.files);
       }}
     >
+      <div
+        className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
+          dragging
+            ? "bg-brand-green text-white"
+            : "bg-zinc-100 text-zinc-400 group-hover:bg-brand-green/10 group-hover:text-brand-green dark:bg-zinc-800"
+        }`}
+      >
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+          <path
+            d="M12 16V4m0 0l-4 4m4-4l4 4M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
       <input
         ref={inputRef}
         type="file"
