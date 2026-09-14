@@ -16,7 +16,7 @@ export default function StepIndicator({ steps, currentIndex }: StepIndicatorProp
           <li key={step} className={`flex items-center ${isLast ? "" : "flex-1"}`}>
             <div className="flex flex-col items-center gap-2">
               <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
                   state === "done"
                     ? "bg-brand-green text-white shadow-[0_0_0_4px_rgba(31,174,100,0.2)]"
                     : state === "active"
@@ -39,7 +39,7 @@ export default function StepIndicator({ steps, currentIndex }: StepIndicatorProp
                 )}
               </span>
               <span
-                className={`text-center text-[11px] font-medium whitespace-nowrap sm:text-xs ${
+                className={`text-center text-xs font-medium whitespace-nowrap sm:text-sm ${
                   state === "todo" ? "text-white/40" : "text-white"
                 }`}
               >

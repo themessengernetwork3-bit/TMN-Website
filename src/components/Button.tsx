@@ -26,7 +26,7 @@ export default function Button({
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${VARIANT_STYLES[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-full px-6 py-3 text-base font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 ${VARIANT_STYLES[variant]} ${className}`}
       {...props}
     />
   );

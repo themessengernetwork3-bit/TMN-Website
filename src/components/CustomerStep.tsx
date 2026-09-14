@@ -41,10 +41,10 @@ export default function CustomerStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">
           {stepNumber}. Upload the customer database to clean
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500">
+        <p className="mt-2 text-base text-zinc-500">
           {showOptOutCopy
             ? "This is the contact list that needs opt-outs removed before use. Nothing here is modified in your opt-out file — it’s read-only reference data."
             : "This is the contact list to format and dedupe for your broadcast."}

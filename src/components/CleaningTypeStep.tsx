@@ -51,38 +51,38 @@ export default function CleaningTypeStep({ stepNumber, onSelect }: CleaningTypeS
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">
           {stepNumber}. Choose a cleaning type
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500">
+        <p className="mt-2 text-base text-zinc-500">
           Pick the workflow that matches what you&rsquo;re sending. Both end with a file
           formatted for a WATI broadcast.
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         {OPTIONS.map((opt) => (
           <button
             key={opt.type}
             type="button"
             onClick={() => onSelect(opt.type)}
-            className="group flex flex-col items-start gap-3 rounded-2xl border border-zinc-100 p-5 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-zinc-200 hover:shadow-md"
+            className="group flex flex-col items-start gap-3.5 rounded-2xl border border-zinc-100 p-7 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-zinc-200 hover:shadow-md"
           >
-            <span className={`h-1 w-10 rounded-full ${ACCENT_BAR[opt.type]}`} />
+            <span className={`h-1.5 w-12 rounded-full ${ACCENT_BAR[opt.type]}`} />
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${ACCENT_PILL[opt.type]}`}
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${ACCENT_PILL[opt.type]}`}
             >
               {opt.label}
             </span>
-            <h3 className="text-base font-bold tracking-tight text-zinc-900">{opt.title}</h3>
-            <p className="text-sm text-zinc-500">{opt.description}</p>
-            <ul className="mt-1 flex flex-col gap-1.5 text-sm text-zinc-600">
+            <h3 className="text-lg font-bold tracking-tight text-zinc-900">{opt.title}</h3>
+            <p className="text-base text-zinc-500">{opt.description}</p>
+            <ul className="mt-1 flex flex-col gap-2 text-base text-zinc-600">
               {opt.bullets.map((b) => (
-                <li key={b} className="flex items-start gap-2">
+                <li key={b} className="flex items-start gap-2.5">
                   <svg
                     viewBox="0 0 16 16"
-                    width="14"
-                    height="14"
+                    width="16"
+                    height="16"
                     fill="none"
                     className="mt-0.5 shrink-0 text-zinc-400"
                     aria-hidden="true"
@@ -99,7 +99,7 @@ export default function CleaningTypeStep({ stepNumber, onSelect }: CleaningTypeS
                 </li>
               ))}
             </ul>
-            <span className="mt-2 text-sm font-semibold text-brand-green group-hover:underline">
+            <span className="mt-2 text-base font-semibold text-brand-green group-hover:underline">
               Select →
             </span>
           </button>

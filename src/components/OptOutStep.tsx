@@ -48,10 +48,10 @@ export default function OptOutStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">
           {stepNumber}. Upload your opt-out / do-not-contact list
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500">
+        <p className="mt-2 text-base text-zinc-500">
           One or more spreadsheets or CSVs of people who must not be contacted.
           A single file can have multiple sheets (e.g. &ldquo;Opt Out&rdquo;,
           &ldquo;RSVP&rdquo;, &ldquo;Unsubscribed&rdquo;) — pick which ones

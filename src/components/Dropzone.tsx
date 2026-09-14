@@ -27,7 +27,7 @@ export default function Dropzone({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl border-2 border-dashed p-10 text-center transition-all duration-200 ${
+      className={`group relative overflow-hidden rounded-2xl border-2 border-dashed p-12 text-center transition-all duration-200 ${
         dragging
           ? "scale-[1.01] border-brand-green bg-brand-green/5"
           : "border-zinc-200 hover:border-brand-green/50 hover:bg-zinc-50/60"
@@ -45,7 +45,7 @@ export default function Dropzone({
       }}
     >
       <div
-        className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
+        className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full transition-colors ${
           dragging
             ? "bg-brand-green text-white"
             : "bg-zinc-100 text-zinc-400 group-hover:bg-brand-green/10 group-hover:text-brand-green"
@@ -53,8 +53,8 @@ export default function Dropzone({
       >
         <svg
           viewBox="0 0 24 24"
-          width="22"
-          height="22"
+          width="26"
+          height="26"
           fill="none"
           aria-hidden="true"
         >
@@ -75,9 +75,9 @@ export default function Dropzone({
         className="hidden"
         onChange={(e) => handleFiles(e.target.files)}
       />
-      <p className="font-medium text-zinc-800">{label}</p>
-      <p className="mt-1 text-sm text-zinc-500">{helpText}</p>
-      <p className="mt-3 text-xs text-zinc-400">
+      <p className="text-lg font-medium text-zinc-800">{label}</p>
+      <p className="mt-1 text-base text-zinc-500">{helpText}</p>
+      <p className="mt-3 text-sm text-zinc-400">
         CSV, XLSX or XLS — click or drag & drop
       </p>
     </div>

@@ -42,12 +42,12 @@ function StatCard({
   accent?: AccentColor;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+    <div className="relative overflow-hidden rounded-2xl border border-zinc-100 bg-white p-5 shadow-sm">
       <span
         className={`absolute top-0 left-0 h-1 w-full ${ACCENT_STYLES[accent]}`}
       />
-      <p className="text-2xl font-bold tabular-nums text-zinc-900">{value}</p>
-      <p className="mt-1 text-xs text-zinc-500">{label}</p>
+      <p className="text-3xl font-bold tabular-nums text-zinc-900">{value}</p>
+      <p className="mt-1 text-sm text-zinc-500">{label}</p>
     </div>
   );
 }
@@ -109,17 +109,17 @@ export default function ResultsStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-900">
           {stepNumber}. Summary
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500">
+        <p className="mt-2 text-base text-zinc-500">
           Assumed default country code{" "}
           <strong className="text-zinc-700">
             +{summary.defaultCountryCode}
           </strong>{" "}
           for any number with a leading 0.
         </p>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-base text-zinc-500">
           Cleaned file is exported as{" "}
           <strong className="text-zinc-700">
             Name, CountryCode, Phone, ContactStatus, AllowCampaign, AllowSMS
@@ -159,7 +159,7 @@ export default function ResultsStep({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard
           label="Rows in original file"
           value={summary.totalOriginalRows}

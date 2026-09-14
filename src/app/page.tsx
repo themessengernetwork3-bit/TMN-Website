@@ -239,13 +239,13 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50">
       <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 sm:px-8">
           <Logo />
         </div>
         <div className="h-[3px] bg-gradient-to-r from-brand-green via-brand-mint to-brand-orange" />
       </header>
 
-      <div className="dot-grid relative overflow-hidden bg-brand-navy pt-14 pb-28">
+      <div className="dot-grid relative overflow-hidden bg-brand-navy pt-12 pb-24">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -top-10 -left-24 h-80 w-80 rounded-full bg-brand-green/30 blur-3xl"
@@ -258,8 +258,8 @@ export default function Home() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-brand-navy to-transparent"
         />
-        <div className="relative mx-auto w-full max-w-4xl px-6">
-          <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+        <div className="relative mx-auto w-full max-w-6xl px-6 sm:px-8">
+          <h1 className="max-w-3xl text-5xl font-bold tracking-tight text-white sm:text-6xl">
             {cleaningType === "optout" ? (
               <>
                 Opt-out list, <span className="text-brand-mint">scrubbed</span>.
@@ -270,7 +270,7 @@ export default function Home() {
               </>
             )}
           </h1>
-          <p className="mt-4 max-w-xl text-base text-brand-mint/80 sm:text-lg">
+          <p className="mt-5 max-w-2xl text-lg text-brand-mint/80 sm:text-xl">
             👉 No manual cross-checking. No guesswork.{" "}
             <span className="font-semibold text-white">Compliant contact lists that work.</span>
           </p>
@@ -280,8 +280,8 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="relative z-10 mx-auto -mt-16 w-full max-w-4xl flex-1 px-6 pb-16">
-        <div className="animate-fade-up rounded-3xl border border-zinc-100 bg-white p-6 shadow-2xl shadow-zinc-900/10 sm:p-8">
+      <main className="relative z-10 mx-auto -mt-14 w-full max-w-6xl flex-1 px-6 pb-16 sm:px-8">
+        <div className="animate-fade-up rounded-3xl border border-zinc-100 bg-white p-8 shadow-2xl shadow-zinc-900/10 sm:p-10">
           {step === 0 && (
             <CleaningTypeStep
               stepNumber={1}
@@ -348,13 +348,13 @@ export default function Home() {
               />
             )}
         </div>
-        <p className="mt-6 text-center text-xs text-zinc-400">
+        <p className="mt-6 text-center text-sm text-zinc-400">
           Files are processed entirely in your browser — nothing is uploaded to a server.
         </p>
       </main>
 
       <footer className="border-t border-white/5 bg-brand-navy py-14">
-        <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-6 text-center">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-6 text-center sm:px-8">
           <Logo variant="light" />
           <div className="mt-2 space-y-1.5 text-sm text-zinc-300">
             <p>
