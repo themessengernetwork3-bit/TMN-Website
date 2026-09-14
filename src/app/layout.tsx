@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Opt-Out List Scrubber | The Messenger Network",
+  title: "Data Master 🫆 | The Messenger Network",
   description:
-    "Cross-reference a customer database against an opt-out list and remove every matching contact — entirely in your browser.",
+    "Dedupe and clean your contact lists, formatted for a WATI broadcast — entirely in your browser.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

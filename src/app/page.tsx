@@ -241,6 +241,9 @@ export default function Home() {
       <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 sm:px-8">
           <Logo />
+          <span className="flex items-center gap-1.5 rounded-full bg-brand-green/10 px-3.5 py-1.5 text-sm font-semibold text-brand-green">
+            Data Master <span aria-hidden="true">🫆</span>
+          </span>
         </div>
         <div className="h-[3px] bg-gradient-to-r from-brand-green via-brand-mint to-brand-orange" />
       </header>

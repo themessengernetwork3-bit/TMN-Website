@@ -1,8 +1,11 @@
-# Opt-Out List Scrubber
+# Data Master 🫆
 
-A browser-based data-hygiene tool for The Messenger Network: cross-reference a customer
-database against an opt-out / do-not-contact list and remove every matching contact
-before the database is used.
+A browser-based data-hygiene tool for The Messenger Network. Two cleaning modes:
+
+1. **Basic cleaning for broadcast send** — dedupe a customer database and format it for
+   a WATI broadcast.
+2. **Opt-out cleaning only** — cross-reference a customer database against an opt-out /
+   do-not-contact list, dedupe, remove every matching contact, then format for WATI.
 
 Built as a web replacement for the "Opt-Out List Scrubber" Gemini Gem — same matching
 logic, now as a reusable tool instead of a chat prompt.
