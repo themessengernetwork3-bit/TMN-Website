@@ -208,8 +208,10 @@ export default function Home() {
 
   const STEPS = cleaningType === "optout" ? STEPS_OPTOUT : STEPS_BASIC;
   const optOutStepIndex = 1;
-  const customerStepIndex = cleaningType === "optout" ? 2 : 1;
-  const summaryStepIndex = cleaningType === "optout" ? 3 : 2;
+  const customerStepIndexFor = (type: CleaningType | null) => (type === "optout" ? 2 : 1);
+  const summaryStepIndexFor = (type: CleaningType | null) => (type === "optout" ? 3 : 2);
+  const customerStepIndex = customerStepIndexFor(cleaningType);
+  const summaryStepIndex = summaryStepIndexFor(cleaningType);
 
   function runScrub() {
     if (!customerSheet) return;
@@ -290,7 +292,7 @@ export default function Home() {
               stepNumber={1}
               onSelect={(type) => {
                 setCleaningType(type);
-                setStep(type === "optout" ? optOutStepIndex : customerStepIndex);
+                setStep(type === "optout" ? optOutStepIndex : customerStepIndexFor(type));
               }}
             />
           )}
