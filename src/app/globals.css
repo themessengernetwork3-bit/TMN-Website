@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -20,12 +21,9 @@
   --color-brand-mint: #8ff0c0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* This is a single branded light-mode app — intentionally not following the
+   visitor's OS dark-mode preference, since half-themed components were
+   producing unreadable low-contrast text (light-on-light, dark-on-dark). */
 
 body {
   background: var(--background);

@@ -37,37 +37,42 @@ export default function CustomerStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
           2. Upload the customer database to clean
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-          This is the contact list that needs opt-outs removed before use. Nothing here
-          is modified in your opt-out file — it&rsquo;s read-only reference data.
+        <p className="mt-1.5 text-sm text-zinc-500">
+          This is the contact list that needs opt-outs removed before use.
+          Nothing here is modified in your opt-out file — it&rsquo;s read-only
+          reference data.
         </p>
       </div>
 
       <Dropzone
-        label={file ? `Replace "${file.fileName}"` : "Drop the customer database here"}
+        label={
+          file
+            ? `Replace "${file.fileName}"`
+            : "Drop the customer database here"
+        }
         helpText="A single spreadsheet or CSV. If it has multiple sheets, you'll pick which one below."
         onFiles={onFile}
         disabled={loading}
       />
 
       {error && (
-        <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">
           {error}
         </p>
       )}
 
       {file && (
-        <div className="animate-fade-up rounded-2xl border border-zinc-100 p-4 shadow-sm dark:border-zinc-800">
+        <div className="animate-fade-up rounded-2xl border border-zinc-100 p-4 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">{file.fileName}</h3>
+            <h3 className="font-semibold text-zinc-800">{file.fileName}</h3>
             {file.sheets.length > 1 && (
               <label className="flex items-center gap-2 text-sm">
                 Sheet:
                 <select
-                  className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-brand-green/50 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
+                  className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-brand-green/50 focus:outline-none"
                   value={selectedSheetName ?? ""}
                   onChange={(e) => onSheetChange(e.target.value)}
                 >
@@ -83,9 +88,13 @@ export default function CustomerStep({
 
           {sheet && (
             <div className="mt-3">
-              <p className="mb-2 text-xs text-zinc-400">{sheet.rows.length} rows</p>
+              <p className="mb-2 text-xs text-zinc-400">
+                {sheet.rows.length} rows
+              </p>
               {sheet.headers.length === 0 ? (
-                <p className="text-sm text-zinc-400">This sheet appears to be empty.</p>
+                <p className="text-sm text-zinc-400">
+                  This sheet appears to be empty.
+                </p>
               ) : (
                 <ColumnMapper
                   headers={sheet.headers}

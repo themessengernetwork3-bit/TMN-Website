@@ -40,10 +40,12 @@ function StatCard({
   accent?: AccentColor;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-      <span className={`absolute top-0 left-0 h-1 w-full ${ACCENT_STYLES[accent]}`} />
-      <p className="text-2xl font-bold tabular-nums text-zinc-900 dark:text-zinc-50">{value}</p>
-      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
+    <div className="relative overflow-hidden rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+      <span
+        className={`absolute top-0 left-0 h-1 w-full ${ACCENT_STYLES[accent]}`}
+      />
+      <p className="text-2xl font-bold tabular-nums text-zinc-900">{value}</p>
+      <p className="mt-1 text-xs text-zinc-500">{label}</p>
     </div>
   );
 }
@@ -103,18 +105,28 @@ export default function ResultsStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
           3. Summary
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-          Assumed default country code <strong className="text-zinc-700 dark:text-zinc-300">+{summary.defaultCountryCode}</strong> for
-          any number with a leading 0.
+        <p className="mt-1.5 text-sm text-zinc-500">
+          Assumed default country code{" "}
+          <strong className="text-zinc-700">
+            +{summary.defaultCountryCode}
+          </strong>{" "}
+          for any number with a leading 0.
         </p>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-500">
           Cleaned file is exported as{" "}
-          <strong className="text-zinc-700 dark:text-zinc-300">Name, CountryCode, Phone, ContactStatus, AllowCampaign, AllowSMS</strong>.
+          <strong className="text-zinc-700">
+            Name, CountryCode, Phone, ContactStatus, AllowCampaign, AllowSMS
+          </strong>
+          .
           {!canonicalOutput.foundInSource.contactStatus && (
-            <> No ContactStatus column found in the source — defaulted to &ldquo;VALID&rdquo;.</>
+            <>
+              {" "}
+              No ContactStatus column found in the source — defaulted to
+              &ldquo;VALID&rdquo;.
+            </>
           )}
           {!canonicalOutput.foundInSource.allowCampaign && (
             <> No AllowCampaign column found — left blank.</>
@@ -126,34 +138,56 @@ export default function ResultsStep({
       </div>
 
       {downloadError && (
-        <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
-          <strong>Download failed:</strong> {downloadError} If this keeps happening, check
-          whether your browser or an extension (ad blocker / download manager) is blocking
-          automatic downloads for this site, then try again.
+        <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          <strong>Download failed:</strong> {downloadError} If this keeps
+          happening, check whether your browser or an extension (ad blocker /
+          download manager) is blocking automatic downloads for this site, then
+          try again.
         </div>
       )}
 
       {!summary.consistent && (
-        <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
-          <strong>Discrepancy detected:</strong> original rows ({summary.totalOriginalRows})
-          does not equal removed ({summary.rowsRemoved}) + remaining ({summary.rowsRemaining}).
-          Please re-check your column selections before using this file.
+        <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          <strong>Discrepancy detected:</strong> original rows (
+          {summary.totalOriginalRows}) does not equal removed (
+          {summary.rowsRemoved}) + remaining ({summary.rowsRemaining}). Please
+          re-check your column selections before using this file.
         </div>
       )}
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <StatCard label="Rows in original file" value={summary.totalOriginalRows} />
-        <StatCard label="Unique opt-out numbers" value={summary.totalUniqueOptOutNumbers} accent="orange" />
-        <StatCard label="Unique contacts removed" value={summary.uniqueMatchedContactsRemoved} accent="orange" />
-        <StatCard label="Rows removed" value={summary.rowsRemoved} accent="orange" />
-        <StatCard label="Rows remaining" value={summary.rowsRemaining} accent="green" />
+        <StatCard
+          label="Rows in original file"
+          value={summary.totalOriginalRows}
+        />
+        <StatCard
+          label="Unique opt-out numbers"
+          value={summary.totalUniqueOptOutNumbers}
+          accent="orange"
+        />
+        <StatCard
+          label="Unique contacts removed"
+          value={summary.uniqueMatchedContactsRemoved}
+          accent="orange"
+        />
+        <StatCard
+          label="Rows removed"
+          value={summary.rowsRemoved}
+          accent="orange"
+        />
+        <StatCard
+          label="Rows remaining"
+          value={summary.rowsRemaining}
+          accent="green"
+        />
       </div>
 
       {summary.rowsRemoved !== summary.uniqueMatchedContactsRemoved && (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Rows removed ({summary.rowsRemoved}) differ from unique contacts removed (
-          {summary.uniqueMatchedContactsRemoved}) — the customer file had duplicate rows
-          sharing the same phone number, and every duplicate was removed.
+        <p className="text-sm text-zinc-500">
+          Rows removed ({summary.rowsRemoved}) differ from unique contacts
+          removed ({summary.uniqueMatchedContactsRemoved}) — the customer file
+          had duplicate rows sharing the same phone number, and every duplicate
+          was removed.
         </p>
       )}
 
@@ -169,14 +203,15 @@ export default function ResultsStep({
           Download removed-contacts list
         </Button>
         <Button variant="ghost" onClick={() => setShowRemoved((v) => !v)}>
-          {showRemoved ? "Hide" : "Preview"} removed contacts ({result.removedContacts.length})
+          {showRemoved ? "Hide" : "Preview"} removed contacts (
+          {result.removedContacts.length})
         </Button>
       </div>
 
       {showRemoved && (
-        <div className="max-h-80 overflow-auto rounded-2xl border border-zinc-100 dark:border-zinc-800">
+        <div className="max-h-80 overflow-auto rounded-2xl border border-zinc-100">
           <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-zinc-50 dark:bg-zinc-900">
+            <thead className="sticky top-0 bg-zinc-50">
               <tr>
                 <th className="px-4 py-2.5 text-left text-xs font-semibold tracking-wide text-zinc-400 uppercase">
                   Name
@@ -186,11 +221,15 @@ export default function ResultsStep({
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-zinc-100">
               {result.removedContacts.map((c, i) => (
-                <tr key={i} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-900/50">
-                  <td className="px-4 py-2.5">{c.name || <span className="text-zinc-400 italic">—</span>}</td>
-                  <td className="px-4 py-2.5 font-mono text-zinc-600 dark:text-zinc-300">{c.phone}</td>
+                <tr key={i} className="hover:bg-zinc-50/80">
+                  <td className="px-4 py-2.5">
+                    {c.name || <span className="text-zinc-400 italic">—</span>}
+                  </td>
+                  <td className="px-4 py-2.5 font-mono text-zinc-600">
+                    {c.phone}
+                  </td>
                 </tr>
               ))}
             </tbody>

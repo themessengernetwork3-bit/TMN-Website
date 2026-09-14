@@ -44,27 +44,30 @@ export default function OptOutStep({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900">
           1. Upload your opt-out / do-not-contact list
         </h2>
-        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-          One or more spreadsheets or CSVs of people who must not be contacted. A single
-          file can have multiple sheets (e.g. &ldquo;Opt Out&rdquo;, &ldquo;RSVP&rdquo;,
-          &ldquo;Unsubscribed&rdquo;) — pick which ones count below.
+        <p className="mt-1.5 text-sm text-zinc-500">
+          One or more spreadsheets or CSVs of people who must not be contacted.
+          A single file can have multiple sheets (e.g. &ldquo;Opt Out&rdquo;,
+          &ldquo;RSVP&rdquo;, &ldquo;Unsubscribed&rdquo;) — pick which ones
+          count below.
         </p>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-zinc-50 px-4 py-3 dark:bg-zinc-900/60">
-        <label htmlFor="cc" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-zinc-50 px-4 py-3">
+        <label htmlFor="cc" className="text-sm font-medium text-zinc-700">
           Default country dial code
         </label>
         <input
           id="cc"
           type="text"
           inputMode="numeric"
-          className="w-20 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-center text-sm font-semibold focus:ring-2 focus:ring-brand-green/50 focus:outline-none dark:border-zinc-700 dark:bg-zinc-950"
+          className="w-20 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-center text-sm font-semibold focus:ring-2 focus:ring-brand-green/50 focus:outline-none"
           value={defaultCountryCode}
-          onChange={(e) => onDefaultCountryCodeChange(e.target.value.replace(/\D/g, ""))}
+          onChange={(e) =>
+            onDefaultCountryCodeChange(e.target.value.replace(/\D/g, ""))
+          }
         />
         <span className="text-xs text-zinc-400">
           Applied when a number starts with a leading 0 (South Africa = 27)
@@ -80,7 +83,7 @@ export default function OptOutStep({
       />
 
       {error && (
-        <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <p className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">
           {error}
         </p>
       )}
@@ -88,11 +91,15 @@ export default function OptOutStep({
       {files.map((file) => (
         <div
           key={file.id}
-          className="animate-fade-up rounded-2xl border border-zinc-100 p-4 shadow-sm dark:border-zinc-800"
+          className="animate-fade-up rounded-2xl border border-zinc-100 p-4 shadow-sm"
         >
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-100">{file.fileName}</h3>
-            <Button variant="danger" className="px-3 py-1 text-xs" onClick={() => onRemoveFile(file.id)}>
+            <h3 className="font-semibold text-zinc-800">{file.fileName}</h3>
+            <Button
+              variant="danger"
+              className="px-3 py-1 text-xs"
+              onClick={() => onRemoveFile(file.id)}
+            >
               Remove file
             </Button>
           </div>
@@ -101,13 +108,15 @@ export default function OptOutStep({
             {file.sheets.map((sheet) => {
               const key = sheetKey(file.id, sheet.name);
               const isIncluded = included[key] ?? false;
-              const looksLikeOptOut = OPT_OUT_SHEET_NAME_PATTERN.test(sheet.name);
+              const looksLikeOptOut = OPT_OUT_SHEET_NAME_PATTERN.test(
+                sheet.name,
+              );
               return (
                 <div
                   key={key}
-                  className="rounded-xl border border-zinc-100 bg-zinc-50/60 p-3.5 dark:border-zinc-800 dark:bg-zinc-900/40"
+                  className="rounded-xl border border-zinc-100 bg-zinc-50/60 p-3.5"
                 >
-                  <label className="flex flex-wrap items-center gap-2 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+                  <label className="flex flex-wrap items-center gap-2 text-sm font-semibold text-zinc-800">
                     <input
                       type="checkbox"
                       className="h-4 w-4 accent-brand-green"
@@ -128,13 +137,17 @@ export default function OptOutStep({
                   {isIncluded && (
                     <div className="mt-3">
                       {sheet.headers.length === 0 ? (
-                        <p className="text-sm text-zinc-400">This sheet appears to be empty.</p>
+                        <p className="text-sm text-zinc-400">
+                          This sheet appears to be empty.
+                        </p>
                       ) : (
                         <ColumnMapper
                           headers={sheet.headers}
                           sampleRow={sheet.rows[0]}
                           roles={roles[key] ?? {}}
-                          onChange={(colIndex, role) => onRoleChange(key, colIndex, role)}
+                          onChange={(colIndex, role) =>
+                            onRoleChange(key, colIndex, role)
+                          }
                         />
                       )}
                     </div>
