@@ -23,13 +23,14 @@ interface ResultsStepProps {
   onRestart: () => void;
 }
 
-type AccentColor = "zinc" | "orange" | "green" | "navy";
+type AccentColor = "zinc" | "orange" | "green" | "navy" | "red";
 
 const ACCENT_STYLES: Record<AccentColor, string> = {
   zinc: "bg-zinc-400",
   orange: "bg-brand-orange",
   green: "bg-brand-green",
   navy: "bg-brand-navy",
+  red: "bg-red-400",
 };
 
 function StatCard({
@@ -165,6 +166,11 @@ export default function ResultsStep({
           value={summary.totalOriginalRows}
         />
         <StatCard
+          label="Invalid numbers removed"
+          value={summary.invalidRowsRemoved}
+          accent="red"
+        />
+        <StatCard
           label="Duplicates removed"
           value={summary.duplicateRowsRemoved}
           accent="orange"
@@ -235,17 +241,23 @@ export default function ResultsStep({
                     {c.name || <span className="text-zinc-400 italic">—</span>}
                   </td>
                   <td className="px-4 py-2.5 font-mono text-zinc-600">
-                    {c.phone}
+                    {c.phone || <span className="text-zinc-400 italic">—</span>}
                   </td>
                   <td className="px-4 py-2.5">
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         c.reason === "opt-out"
                           ? "bg-brand-orange/10 text-brand-orange"
-                          : "bg-zinc-100 text-zinc-500"
+                          : c.reason === "invalid"
+                            ? "bg-red-50 text-red-600"
+                            : "bg-zinc-100 text-zinc-500"
                       }`}
                     >
-                      {c.reason === "opt-out" ? "Opt-out" : "Duplicate"}
+                      {c.reason === "opt-out"
+                        ? "Opt-out"
+                        : c.reason === "invalid"
+                          ? "Invalid number"
+                          : "Duplicate"}
                     </span>
                   </td>
                 </tr>

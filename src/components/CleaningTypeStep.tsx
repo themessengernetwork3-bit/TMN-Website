@@ -31,6 +31,7 @@ const OPTIONS: {
     description: "Just a customer database — no opt-out list needed.",
     bullets: [
       "Removes duplicate contacts (same phone number)",
+      "Removes invalid or missing phone numbers",
       "Formats to Name / CountryCode / Phone / ContactStatus / AllowCampaign / AllowSMS",
     ],
   },
@@ -41,6 +42,7 @@ const OPTIONS: {
     description: "An opt-out list plus a customer database.",
     bullets: [
       "Removes duplicate contacts (same phone number)",
+      "Removes invalid or missing phone numbers",
       "Removes everyone on your opt-out / do-not-contact list",
       "Formats to Name / CountryCode / Phone / ContactStatus / AllowCampaign / AllowSMS",
     ],

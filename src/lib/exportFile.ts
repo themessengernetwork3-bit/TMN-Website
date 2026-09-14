@@ -31,11 +31,17 @@ export function buildXlsxBlob(
   });
 }
 
+const REMOVAL_REASON_LABELS: Record<RemovedContact["reason"], string> = {
+  "opt-out": "Opt-out",
+  duplicate: "Duplicate",
+  invalid: "Invalid number",
+};
+
 export function buildRemovedContactsCsvBlob(contacts: RemovedContact[]): Blob {
   const content = Papa.unparse(
     [
       ["Name", "Phone", "Reason"],
-      ...contacts.map((c) => [c.name, c.phone, c.reason === "opt-out" ? "Opt-out" : "Duplicate"]),
+      ...contacts.map((c) => [c.name, c.phone, REMOVAL_REASON_LABELS[c.reason]]),
     ],
     { delimiter: "," },
   );

@@ -1,4 +1,4 @@
-import { normalizePhoneNumber } from "./normalize";
+import { isValidPhoneNumber, normalizePhoneNumber } from "./normalize";
 import type {
   CustomerSheetConfig,
   OptOutSheetConfig,
@@ -34,9 +34,10 @@ export function buildOptOutSet(
 }
 
 /**
- * Dedupes the customer sheet by normalized phone number (keeping the first
- * occurrence of each), then removes anyone whose number is in `optOutSet`
- * (pass an empty set for basic cleaning, where there is no opt-out list).
+ * Removes rows with no valid phone number, dedupes the rest by normalized
+ * phone number (keeping the first occurrence of each), then removes anyone
+ * whose number is in `optOutSet` (pass an empty set for basic cleaning,
+ * where there is no opt-out list).
  */
 export function scrubCustomerSheet(
   sheet: ParsedSheet,
@@ -49,6 +50,7 @@ export function scrubCustomerSheet(
   const removedContacts: RemovedContact[] = [];
   const matchedOptOutNumbers = new Set<string>();
   const seenNumbers = new Set<string>();
+  let invalidRowsRemoved = 0;
   let duplicateRowsRemoved = 0;
   let optOutRowsRemoved = 0;
 
@@ -62,16 +64,27 @@ export function scrubCustomerSheet(
 
     const name = config.nameColIndex !== null ? (row[config.nameColIndex] ?? "") : "";
 
-    const isDuplicate = rowNumbers.some((n) => seenNumbers.has(n));
+    const validNumbers = config.phoneColIndexes
+      .filter((colIndex) => isValidPhoneNumber(row[colIndex], defaultCountryCode, explicitCc))
+      .map((colIndex) => normalizePhoneNumber(row[colIndex], defaultCountryCode, explicitCc))
+      .filter((n): n is string => n !== null);
+    if (validNumbers.length === 0) {
+      invalidRowsRemoved++;
+      removedRows.push(row);
+      removedContacts.push({ name, phone: rowNumbers[0] ?? "", reason: "invalid" });
+      continue;
+    }
+
+    const isDuplicate = validNumbers.some((n) => seenNumbers.has(n));
     if (isDuplicate) {
       duplicateRowsRemoved++;
       removedRows.push(row);
-      removedContacts.push({ name, phone: rowNumbers[0] ?? "", reason: "duplicate" });
+      removedContacts.push({ name, phone: validNumbers[0], reason: "duplicate" });
       continue;
     }
-    rowNumbers.forEach((n) => seenNumbers.add(n));
+    validNumbers.forEach((n) => seenNumbers.add(n));
 
-    const matches = rowNumbers.filter((n) => optOutSet.has(n));
+    const matches = validNumbers.filter((n) => optOutSet.has(n));
 
     if (matches.length > 0) {
       matches.forEach((n) => matchedOptOutNumbers.add(n));
@@ -98,6 +111,7 @@ export function scrubCustomerSheet(
       uniqueMatchedContactsRemoved: matchedOptOutNumbers.size,
       duplicateRowsRemoved,
       optOutRowsRemoved,
+      invalidRowsRemoved,
       rowsRemoved,
       rowsRemaining,
       consistent: totalOriginalRows === rowsRemoved + rowsRemaining,

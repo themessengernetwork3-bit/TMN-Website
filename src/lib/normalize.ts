@@ -40,6 +40,31 @@ function onlyDigits(value: string | number | null | undefined): string {
   return String(value).replace(/\D/g, "");
 }
 
+/**
+ * Plausibility check for a raw phone number value. Rejects values with no
+ * digits, values that normalize to something shorter or longer than any real
+ * phone number uses (E.164 caps international numbers at 15 digits), and
+ * values that are just the same digit repeated as typed — a common
+ * placeholder for missing data ("0000000000") rather than a real contact
+ * number. Checked on the digits as typed (before any leading-zero stripping
+ * or country-code merging) so a placeholder is still caught even though
+ * merging a country code onto it would otherwise break up the repeated run.
+ */
+export function isValidPhoneNumber(
+  raw: string | number | null | undefined,
+  defaultCountryCode: string,
+  explicitCountryCode?: string | number | null,
+): boolean {
+  const digits = onlyDigits(raw);
+  if (!digits) return false;
+  if (/^(\d)\1+$/.test(digits)) return false;
+
+  const normalized = normalizePhoneNumber(raw, defaultCountryCode, explicitCountryCode);
+  if (!normalized || normalized.length < 8 || normalized.length > 15) return false;
+
+  return true;
+}
+
 export interface PhoneParts {
   countryCode: string;
   local: string;

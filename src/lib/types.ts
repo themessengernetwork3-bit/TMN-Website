@@ -6,7 +6,7 @@ export type FileFormat = "csv" | "xlsx" | "xls";
  */
 export type CleaningType = "basic" | "optout";
 
-export type RemovalReason = "duplicate" | "opt-out";
+export type RemovalReason = "duplicate" | "opt-out" | "invalid";
 
 export interface ParsedSheet {
   /** Sheet/tab name. CSV files get a single synthetic sheet named "Sheet1". */
@@ -63,6 +63,8 @@ export interface ScrubSummary {
   duplicateRowsRemoved: number;
   /** Rows removed because they matched the opt-out set (0 for basic cleaning). */
   optOutRowsRemoved: number;
+  /** Rows removed because none of their phone numbers were valid (missing, too short/long, or a repeated-digit placeholder). */
+  invalidRowsRemoved: number;
   rowsRemoved: number;
   rowsRemaining: number;
   consistent: boolean;
