@@ -1,5 +1,5 @@
 import { splitPhoneNumber } from "./normalize";
-import { detectPassthroughColumns } from "./columnDetect";
+import { detectPassthroughColumns, toFieldName } from "./columnDetect";
 import type { CustomerSheetConfig, ParsedSheet } from "./types";
 
 export const CANONICAL_HEADERS = [
@@ -72,7 +72,7 @@ export function buildCanonicalOutput(
     ];
   });
 
-  const extraHeaders = extraColumnIndexes.map((i) => sheet.headers[i] ?? "");
+  const extraHeaders = extraColumnIndexes.map((i) => toFieldName(sheet.headers[i] ?? ""));
 
   return {
     headers: [...CANONICAL_HEADERS, ...extraHeaders],

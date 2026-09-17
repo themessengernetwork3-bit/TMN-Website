@@ -9,7 +9,12 @@ import CustomerStep from "@/components/CustomerStep";
 import ResultsStep from "@/components/ResultsStep";
 import type { ColumnRole } from "@/components/ColumnMapper";
 import { parseUploadedFile } from "@/lib/parseFile";
-import { detectColumns, detectPassthroughColumns, OPT_OUT_SHEET_NAME_PATTERN } from "@/lib/columnDetect";
+import {
+  detectColumns,
+  detectPassthroughColumns,
+  OPT_OUT_SHEET_NAME_PATTERN,
+  toFieldName,
+} from "@/lib/columnDetect";
 import { buildOptOutSet, scrubCustomerSheet } from "@/lib/scrub";
 import { buildCanonicalOutput, type CanonicalOutput } from "@/lib/canonicalOutput";
 import type {
@@ -228,7 +233,7 @@ export default function Home() {
       ...(passthrough.allowSmsIndex !== null ? [passthrough.allowSmsIndex] : []),
     ]);
     return customerSheet.headers
-      .map((header, index) => ({ index, header }))
+      .map((header, index) => ({ index, header, fieldName: toFieldName(header) }))
       .filter(({ index }) => !usedIndexes.has(index));
   }, [customerSheet, customerConfig]);
 

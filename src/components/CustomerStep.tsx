@@ -11,7 +11,7 @@ interface CustomerStepProps {
   file: ParsedFile | null;
   selectedSheetName: string | null;
   roles: Record<number, ColumnRole>;
-  extraColumns: { index: number; header: string }[];
+  extraColumns: { index: number; header: string; fieldName: string }[];
   extraColumnsSelected: Record<number, boolean>;
   onFile: (files: File[]) => void;
   onSheetChange: (name: string) => void;
@@ -123,10 +123,12 @@ export default function CustomerStep({
                   <p className="mt-1 text-xs text-zinc-500">
                     These aren&rsquo;t part of the standard Name / CountryCode / Phone /
                     ContactStatus / AllowCampaign / AllowSMS fields. Tick any you want carried
-                    into the cleaned file — everything else is left out.
+                    into the cleaned file — everything else is left out. Multi-word column names
+                    are exported with underscores instead of spaces (e.g. &ldquo;Email
+                    address&rdquo; → &ldquo;Email_address&rdquo;).
                   </p>
                   <div className="mt-3 flex flex-col gap-2">
-                    {extraColumns.map(({ index, header }) => (
+                    {extraColumns.map(({ index, header, fieldName }) => (
                       <label
                         key={index}
                         className="flex items-center gap-2 text-sm text-zinc-700"
@@ -140,6 +142,11 @@ export default function CustomerStep({
                         {header || (
                           <span className="text-zinc-400 italic">
                             (unnamed column {index + 1})
+                          </span>
+                        )}
+                        {fieldName !== header && (
+                          <span className="text-xs text-zinc-400">
+                            → exports as <span className="font-mono">{fieldName}</span>
                           </span>
                         )}
                       </label>

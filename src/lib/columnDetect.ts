@@ -36,6 +36,18 @@ export function normalizeHeader(header: string): string {
   return header.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+/**
+ * Converts a source header into an output field name: trims it and replaces
+ * runs of whitespace with a single underscore (e.g. "Email address" ->
+ * "Email_address", "nature of business" -> "nature_of_business"). A
+ * single-word header like "Email" is left as-is. Casing is preserved either
+ * way — this only fixes up spaces, which most broadcast tools reject in a
+ * custom field name.
+ */
+export function toFieldName(header: string): string {
+  return header.trim().replace(/\s+/g, "_");
+}
+
 function matchesAny(normalized: string, tokens: string[]): boolean {
   return tokens.some((token) => normalized.includes(token));
 }
