@@ -125,6 +125,14 @@ export default function ResultsStep({
           <strong className="text-zinc-700">
             Name, CountryCode, Phone, ContactStatus, AllowCampaign, AllowSMS
           </strong>
+          {canonicalOutput.extraHeaders.length > 0 && (
+            <>
+              , plus{" "}
+              <strong className="text-zinc-700">
+                {canonicalOutput.extraHeaders.join(", ")}
+              </strong>
+            </>
+          )}
           .
           {!canonicalOutput.foundInSource.contactStatus && (
             <>

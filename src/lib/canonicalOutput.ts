@@ -20,6 +20,8 @@ export interface CanonicalOutput {
     allowCampaign: boolean;
     allowSms: boolean;
   };
+  /** Header names of any extra source columns the user chose to include, appended after the canonical fields. */
+  extraHeaders: string[];
 }
 
 const DEFAULT_CONTACT_STATUS = "VALID";
@@ -37,6 +39,7 @@ export function buildCanonicalOutput(
   config: CustomerSheetConfig,
   rows: string[][],
   defaultCountryCode: string,
+  extraColumnIndexes: number[] = [],
 ): CanonicalOutput {
   const passthrough = detectPassthroughColumns(sheet.headers);
   const primaryPhoneCol = config.phoneColIndexes[0] ?? null;
@@ -65,16 +68,20 @@ export function buildCanonicalOutput(
       contactStatus,
       allowCampaign,
       allowSms,
+      ...extraColumnIndexes.map((i) => row[i] ?? ""),
     ];
   });
 
+  const extraHeaders = extraColumnIndexes.map((i) => sheet.headers[i] ?? "");
+
   return {
-    headers: [...CANONICAL_HEADERS],
+    headers: [...CANONICAL_HEADERS, ...extraHeaders],
     rows: outRows,
     foundInSource: {
       contactStatus: passthrough.contactStatusIndex !== null,
       allowCampaign: passthrough.allowCampaignIndex !== null,
       allowSms: passthrough.allowSmsIndex !== null,
     },
+    extraHeaders,
   };
 }

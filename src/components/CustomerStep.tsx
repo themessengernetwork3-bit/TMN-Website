@@ -11,9 +11,12 @@ interface CustomerStepProps {
   file: ParsedFile | null;
   selectedSheetName: string | null;
   roles: Record<number, ColumnRole>;
+  extraColumns: { index: number; header: string }[];
+  extraColumnsSelected: Record<number, boolean>;
   onFile: (files: File[]) => void;
   onSheetChange: (name: string) => void;
   onRoleChange: (colIndex: number, role: ColumnRole) => void;
+  onExtraColumnToggle: (colIndex: number, included: boolean) => void;
   onBack: () => void;
   onRun: () => void;
   canRun: boolean;
@@ -27,9 +30,12 @@ export default function CustomerStep({
   file,
   selectedSheetName,
   roles,
+  extraColumns,
+  extraColumnsSelected,
   onFile,
   onSheetChange,
   onRoleChange,
+  onExtraColumnToggle,
   onBack,
   onRun,
   canRun,
@@ -107,6 +113,39 @@ export default function CustomerStep({
                   onChange={onRoleChange}
                   allowName
                 />
+              )}
+
+              {extraColumns.length > 0 && (
+                <div className="mt-4 rounded-xl border border-zinc-100 bg-zinc-50/60 p-3.5">
+                  <p className="text-sm font-semibold text-zinc-800">
+                    Additional columns found in your file
+                  </p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    These aren&rsquo;t part of the standard Name / CountryCode / Phone /
+                    ContactStatus / AllowCampaign / AllowSMS fields. Tick any you want carried
+                    into the cleaned file — everything else is left out.
+                  </p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    {extraColumns.map(({ index, header }) => (
+                      <label
+                        key={index}
+                        className="flex items-center gap-2 text-sm text-zinc-700"
+                      >
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 accent-brand-green"
+                          checked={extraColumnsSelected[index] ?? false}
+                          onChange={(e) => onExtraColumnToggle(index, e.target.checked)}
+                        />
+                        {header || (
+                          <span className="text-zinc-400 italic">
+                            (unnamed column {index + 1})
+                          </span>
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           )}

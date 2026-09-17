@@ -9,7 +9,7 @@ import CustomerStep from "@/components/CustomerStep";
 import ResultsStep from "@/components/ResultsStep";
 import type { ColumnRole } from "@/components/ColumnMapper";
 import { parseUploadedFile } from "@/lib/parseFile";
-import { detectColumns, OPT_OUT_SHEET_NAME_PATTERN } from "@/lib/columnDetect";
+import { detectColumns, detectPassthroughColumns, OPT_OUT_SHEET_NAME_PATTERN } from "@/lib/columnDetect";
 import { buildOptOutSet, scrubCustomerSheet } from "@/lib/scrub";
 import { buildCanonicalOutput, type CanonicalOutput } from "@/lib/canonicalOutput";
 import type {
@@ -71,6 +71,7 @@ export default function Home() {
   const [customerFile, setCustomerFile] = useState<ParsedFile | null>(null);
   const [customerSheetName, setCustomerSheetName] = useState<string | null>(null);
   const [customerRoles, setCustomerRoles] = useState<RolesMap>({});
+  const [extraColumnsSelected, setExtraColumnsSelected] = useState<Record<number, boolean>>({});
   const [customerLoading, setCustomerLoading] = useState(false);
   const [customerError, setCustomerError] = useState<string | null>(null);
 
@@ -172,6 +173,7 @@ export default function Home() {
       setCustomerFile(parsed);
       setCustomerSheetName(chosen.name);
       setCustomerRoles(rolesFromDetection(chosen.headers));
+      setExtraColumnsSelected({});
     } catch (e) {
       setCustomerError(e instanceof Error ? e.message : "Could not read that file.");
     } finally {
@@ -183,6 +185,11 @@ export default function Home() {
     setCustomerSheetName(name);
     const sheet = customerFile?.sheets.find((s) => s.name === name);
     setCustomerRoles(rolesFromDetection(sheet?.headers ?? []));
+    setExtraColumnsSelected({});
+  }
+
+  function handleExtraColumnToggle(colIndex: number, included: boolean) {
+    setExtraColumnsSelected((prev) => ({ ...prev, [colIndex]: included }));
   }
 
   function handleCustomerRoleChange(colIndex: number, role: ColumnRole) {
@@ -206,6 +213,29 @@ export default function Home() {
 
   const canRun = !!customerSheet && customerConfig.phoneColIndexes.length > 0;
 
+  // Source columns not already used by the canonical schema (phone/country/name,
+  // or a ContactStatus/AllowCampaign/AllowSMS passthrough match) — the user picks
+  // which of these, if any, to carry into the output alongside the standard fields.
+  const extraColumnCandidates = useMemo(() => {
+    if (!customerSheet) return [];
+    const passthrough = detectPassthroughColumns(customerSheet.headers);
+    const usedIndexes = new Set<number>([
+      ...customerConfig.phoneColIndexes,
+      ...(customerConfig.countryCodeColIndex !== null ? [customerConfig.countryCodeColIndex] : []),
+      ...(customerConfig.nameColIndex !== null ? [customerConfig.nameColIndex] : []),
+      ...(passthrough.contactStatusIndex !== null ? [passthrough.contactStatusIndex] : []),
+      ...(passthrough.allowCampaignIndex !== null ? [passthrough.allowCampaignIndex] : []),
+      ...(passthrough.allowSmsIndex !== null ? [passthrough.allowSmsIndex] : []),
+    ]);
+    return customerSheet.headers
+      .map((header, index) => ({ index, header }))
+      .filter(({ index }) => !usedIndexes.has(index));
+  }, [customerSheet, customerConfig]);
+
+  const selectedExtraColumnIndexes = extraColumnCandidates
+    .filter(({ index }) => extraColumnsSelected[index])
+    .map(({ index }) => index);
+
   const STEPS = cleaningType === "optout" ? STEPS_OPTOUT : STEPS_BASIC;
   const optOutStepIndex = 1;
   const customerStepIndexFor = (type: CleaningType | null) => (type === "optout" ? 2 : 1);
@@ -220,7 +250,13 @@ export default function Home() {
     const scrubResult = scrubCustomerSheet(customerSheet, customerConfig, optOutSet, defaultCountryCode);
     setResult(scrubResult);
     setCanonicalOutput(
-      buildCanonicalOutput(customerSheet, customerConfig, scrubResult.keptRows, defaultCountryCode),
+      buildCanonicalOutput(
+        customerSheet,
+        customerConfig,
+        scrubResult.keptRows,
+        defaultCountryCode,
+        selectedExtraColumnIndexes,
+      ),
     );
     setStep(summaryStepIndex);
   }
@@ -233,6 +269,7 @@ export default function Home() {
     setCustomerFile(null);
     setCustomerSheetName(null);
     setCustomerRoles({});
+    setExtraColumnsSelected({});
     setResult(null);
     setCanonicalOutput(null);
     setStep(0);
@@ -324,9 +361,12 @@ export default function Home() {
               file={customerFile}
               selectedSheetName={customerSheetName}
               roles={customerRoles}
+              extraColumns={extraColumnCandidates}
+              extraColumnsSelected={extraColumnsSelected}
               onFile={handleCustomerFile}
               onSheetChange={handleCustomerSheetChange}
               onRoleChange={handleCustomerRoleChange}
+              onExtraColumnToggle={handleExtraColumnToggle}
               onBack={() => setStep(cleaningType === "optout" ? optOutStepIndex : 0)}
               onRun={runScrub}
               canRun={canRun}
