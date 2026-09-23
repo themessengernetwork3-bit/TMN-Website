@@ -133,19 +133,14 @@ export default function ResultsStep({
               </strong>
             </>
           )}
-          .
+          . AllowCampaign and AllowSMS are always set to &ldquo;TRUE&rdquo; for every
+          contact in the cleaned file.
           {!canonicalOutput.foundInSource.contactStatus && (
             <>
               {" "}
               No ContactStatus column found in the source — defaulted to
               &ldquo;VALID&rdquo;.
             </>
-          )}
-          {!canonicalOutput.foundInSource.allowCampaign && (
-            <> No AllowCampaign column found — left blank.</>
-          )}
-          {!canonicalOutput.foundInSource.allowSms && (
-            <> No AllowSMS column found — left blank.</>
           )}
         </p>
       </div>

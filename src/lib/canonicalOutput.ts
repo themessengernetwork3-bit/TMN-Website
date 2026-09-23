@@ -17,22 +17,21 @@ export interface CanonicalOutput {
   /** Which passthrough fields were actually found in the source file, for the summary note. */
   foundInSource: {
     contactStatus: boolean;
-    allowCampaign: boolean;
-    allowSms: boolean;
   };
   /** Header names of any extra source columns the user chose to include, appended after the canonical fields. */
   extraHeaders: string[];
 }
 
 const DEFAULT_CONTACT_STATUS = "VALID";
+const ALLOW_VALUE = "TRUE";
 
 /**
  * Builds the standardized Name/CountryCode/Phone/ContactStatus/AllowCampaign/AllowSMS
  * output, regardless of what columns the source customer file actually had.
- * ContactStatus/AllowCampaign/AllowSMS are carried through verbatim when the source
- * has matching columns; ContactStatus otherwise defaults to "VALID" (these are the
- * contacts that passed the scrub) and AllowCampaign/AllowSMS default to blank rather
- * than assuming consent.
+ * ContactStatus is carried through verbatim when the source has a matching column,
+ * otherwise defaults to "VALID" (these are the contacts that passed the scrub).
+ * AllowCampaign/AllowSMS are always "TRUE" — every row here already passed the
+ * scrub, so it's cleared for broadcast/SMS regardless of what the source had.
  */
 export function buildCanonicalOutput(
   sheet: ParsedSheet,
@@ -56,18 +55,14 @@ export function buildCanonicalOutput(
       passthrough.contactStatusIndex !== null
         ? (row[passthrough.contactStatusIndex] ?? "")
         : DEFAULT_CONTACT_STATUS;
-    const allowCampaign =
-      passthrough.allowCampaignIndex !== null ? (row[passthrough.allowCampaignIndex] ?? "") : "";
-    const allowSms =
-      passthrough.allowSmsIndex !== null ? (row[passthrough.allowSmsIndex] ?? "") : "";
 
     return [
       name,
       parts?.countryCode ?? "",
       parts?.local ?? "",
       contactStatus,
-      allowCampaign,
-      allowSms,
+      ALLOW_VALUE,
+      ALLOW_VALUE,
       ...extraColumnIndexes.map((i) => row[i] ?? ""),
     ];
   });
@@ -79,8 +74,6 @@ export function buildCanonicalOutput(
     rows: outRows,
     foundInSource: {
       contactStatus: passthrough.contactStatusIndex !== null,
-      allowCampaign: passthrough.allowCampaignIndex !== null,
-      allowSms: passthrough.allowSmsIndex !== null,
     },
     extraHeaders,
   };
