@@ -4,7 +4,9 @@
  * Rules (per the opt-out scrubber spec):
  *  1. Strip everything that isn't a digit.
  *  2. If a separate country-code value is supplied, strip any leading 0 from the
- *     local number and prefix it with the digits of the country code.
+ *     local number, then strip that same country code again if the number already
+ *     has it baked in (e.g. CountryCode=27, Phone=27821234567), and prefix it with
+ *     the digits of the country code.
  *  3. Otherwise, if the number starts with a leading 0 (local format), replace it
  *     with `defaultCountryCode`.
  *  4. Otherwise the digits are used as-is (already assumed to include a country code).
@@ -21,7 +23,7 @@ export function normalizePhoneNumber(
 
   const ccDigits = onlyDigits(explicitCountryCode);
   if (ccDigits) {
-    const local = digits.startsWith("0") ? digits.slice(1) : digits;
+    const local = stripCountryCodePrefix(digits.startsWith("0") ? digits.slice(1) : digits, ccDigits);
     if (!local) return null;
     return ccDigits + local;
   }
@@ -38,6 +40,14 @@ export function normalizePhoneNumber(
 function onlyDigits(value: string | number | null | undefined): string {
   if (value === null || value === undefined) return "";
   return String(value).replace(/\D/g, "");
+}
+
+/** Strips an already-present country-code prefix from a local number, e.g. local "27821234567" with ccDigits "27" -> "821234567". Leaves the local number untouched if it's just the country code alone. */
+function stripCountryCodePrefix(local: string, ccDigits: string): string {
+  if (ccDigits && local.startsWith(ccDigits) && local.length > ccDigits.length) {
+    return local.slice(ccDigits.length);
+  }
+  return local;
 }
 
 /**
@@ -88,7 +98,7 @@ export function splitPhoneNumber(
 
   const ccDigits = onlyDigits(explicitCountryCode);
   if (ccDigits) {
-    const local = digits.startsWith("0") ? digits.slice(1) : digits;
+    const local = stripCountryCodePrefix(digits.startsWith("0") ? digits.slice(1) : digits, ccDigits);
     if (!local) return null;
     return { countryCode: ccDigits, local };
   }
